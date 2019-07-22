@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="../lib/Essentials.jar"/>
 	<classpathentry kind="lib" path="../lib/EssentialsGroupManager.jar"/>
 	<classpathentry kind="lib" path="../lib/bukkit.jar" sourcepath="/lib/bukkit.jar">
@@ -13,5 +17,7 @@
 	<classpathentry kind="lib" path="../lib/TheNewChat.jar"/>
 	<classpathentry kind="lib" path="../lib/Vault.jar"/>
 	<classpathentry kind="lib" path="../lib/Reserve.jar"/>
+	<classpathentry kind="lib" path="../lib/WorldEdit-7.0.0.jar"/>
+	<classpathentry kind="lib" path="../lib/WorldGuard-7.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
