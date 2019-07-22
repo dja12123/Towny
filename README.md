@@ -1,4 +1,5 @@
 이 타우니는 월드가드를 지원하지롱
+Towny WorldGuard priority is 10
 
 <p align="center">
 <img src="http://towny.palmergames.com/wp-content/uploads/2013/01/townylogo.png" height="155" width="153">
