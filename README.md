@@ -1,4 +1,5 @@
-이 타우니는 월드가드를 지원하지롱.
+이 타우니는 월드가드를 지원하지롱
+
 Towny WorldGuard priority is 10
 
 WARNNING!! 
