@@ -1,6 +1,10 @@
-이 타우니는 월드가드를 지원하지롱
+이 타우니는 월드가드를 지원하지롱.
 Towny WorldGuard priority is 10
 
+WARNNING!! 
+This plug-in has been modified for personal use and is not fully compatible with WorldGuard
+
+There may be a bug because I did not write the code while I understood the source code
 <p align="center">
 <img src="http://towny.palmergames.com/wp-content/uploads/2013/01/townylogo.png" height="155" width="153">
 </p>
