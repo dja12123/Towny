@@ -18,11 +18,10 @@ import com.palmergames.bukkit.towny.regen.TownyRegenAPI;
 import com.palmergames.bukkit.towny.regen.block.BlockLocation;
 import com.palmergames.bukkit.towny.tasks.ProtectionRegenTask;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
+import com.palmergames.bukkit.towny.utils.WorldGuardChecker;
 import com.palmergames.bukkit.towny.war.eventwar.War;
 import com.palmergames.bukkit.towny.war.flagwar.TownyWar;
 import com.palmergames.bukkit.towny.war.flagwar.TownyWarConfig;
-import com.palmergames.bukkit.util.BukkitTools;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -48,11 +47,11 @@ public class TownyBlockListener implements Listener {
 	public TownyBlockListener(Towny instance) {
 
 		plugin = instance;
+		
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
-
 		if (plugin.isError()) {
 			event.setCancelled(true);
 			return;
@@ -60,7 +59,11 @@ public class TownyBlockListener implements Listener {
 
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
-
+		
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
+			return;
+		}
 		//Get build permissions (updates cache if none exist)
 		boolean bDestroy = PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.DESTROY);
 		
@@ -121,7 +124,6 @@ public class TownyBlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
-
 		if (plugin.isError()) {
 			event.setCancelled(true);
 			return;
@@ -129,6 +131,10 @@ public class TownyBlockListener implements Listener {
 
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
+			return;
+		}
 		WorldCoord worldCoord;
 		
 		try {
@@ -214,16 +220,23 @@ public class TownyBlockListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
+			return;
+		}
 		if (onBurn(event.getBlock()))
 			event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBlockIgnite(BlockIgniteEvent event) {
-
 		if (event.isCancelled() || plugin.isError()) {
 			event.setCancelled(true);
+			return;
+		}
+		
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
 			return;
 		}
 
@@ -237,6 +250,11 @@ public class TownyBlockListener implements Listener {
 
 		if (plugin.isError()) {
 			event.setCancelled(true);
+			return;
+		}
+		
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
 			return;
 		}
 
@@ -258,6 +276,11 @@ public class TownyBlockListener implements Listener {
 
 		if (plugin.isError()) {
 			event.setCancelled(true);
+			return;
+		}
+		
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
 			return;
 		}
 		
@@ -403,6 +426,11 @@ public class TownyBlockListener implements Listener {
 	public void onCreateExplosion(BlockExplodeEvent event) {
 		if (plugin.isError()) {
 			event.setCancelled(true);
+			return;
+		}
+		
+		if(!WorldGuardChecker.isTopPriority(event.getBlock().getLocation()))
+		{
 			return;
 		}
 		

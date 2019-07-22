@@ -44,6 +44,7 @@ import com.palmergames.bukkit.towny.permissions.TownyPerms;
 import com.palmergames.bukkit.towny.permissions.VaultPermSource;
 import com.palmergames.bukkit.towny.regen.TownyRegenAPI;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
+import com.palmergames.bukkit.towny.utils.WorldGuardChecker;
 import com.palmergames.bukkit.towny.war.flagwar.TownyWar;
 import com.palmergames.bukkit.towny.war.flagwar.listeners.TownyWarBlockListener;
 import com.palmergames.bukkit.towny.war.flagwar.listeners.TownyWarCustomListener;
@@ -52,6 +53,9 @@ import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.util.FileMgmt;
 import com.palmergames.util.JavaUtil;
 import com.palmergames.util.StringMgmt;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -102,6 +106,7 @@ public class Towny extends JavaPlugin {
 	private Map<String, PlayerCache> playerCache = Collections.synchronizedMap(new HashMap<>());
 
 	private Essentials essentials = null;
+	private WorldGuard worldGuard;
 	private boolean citizens2 = false;
 
 	private boolean error = false;
@@ -150,6 +155,7 @@ public class Towny extends JavaPlugin {
 		TownyPerms.initialize(this);
 		InviteHandler.initialize(this);
 		ConfirmationHandler.initialize(this);
+		
 
 		if (load()) {
 			// Setup bukkit command interfaces
@@ -171,7 +177,9 @@ public class Towny extends JavaPlugin {
 
 			// Register all child permissions for ranks
 			TownyPerms.registerPermissionNodes();
+			WorldGuardChecker.init(this);
 		}
+		
 
 		registerEvents();
 
@@ -343,6 +351,23 @@ public class Towny extends JavaPlugin {
 			using.add(String.format("%s v%s", "Essentials", test.getDescription().getVersion()));
 		}
 		
+		
+		// support WorldGuard
+		try
+		{
+			test = WorldGuardPlugin.inst();
+			WorldGuard wg = WorldGuard.getInstance();
+			if(test != null && wg != null)
+			{
+				this.worldGuard = wg;
+			}
+			using.add(String.format("%s v%s", "WorldGuard", test.getDescription().getVersion()));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 		test = getServer().getPluginManager().getPlugin("Questioner");	
 		if (test != null) {
 			TownyMessaging.sendErrorMsg("Questioner.jar present on server, Towny no longer requires Questioner for invites/confirmations.");
@@ -496,6 +521,15 @@ public class Towny extends JavaPlugin {
 		else
 			return essentials;
 	}
+	
+	public WorldGuard getWorldGuard() throws TownyException {
+
+		if (this.worldGuard == null)
+			throw new TownyException("WorldGuard is not installed, or not enabled!");
+		else
+			return this.worldGuard;
+	}
+
 
 	public World getServerWorld(String name) throws NotRegisteredException {
 
