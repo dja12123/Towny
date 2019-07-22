@@ -2212,10 +2212,8 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 			
 			double travelCost = 0;
 			
-			if (townSpawnPermission == TownSpawnLevel.UNAFFILIATED)
-				travelCost = townSpawnPermission.getCost(town);
-			else
-				travelCost = townSpawnPermission.getCost();
+			// Taking whichever is smaller, the cost of the spawn price set by the town, or the cost set in the config (which is the maximum a town can set their spawncost to.) 
+			travelCost = Math.min(townSpawnPermission.getCost(town), townSpawnPermission.getCost());
 
 			// Check if need/can pay
 			if ( (!TownyUniverse.getPermissionSource().testPermission(player, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_TOWN_SPAWN_FREECHARGE.getNode())) &&
@@ -2374,28 +2372,24 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		for (Resident newMember : new ArrayList<Resident>(invited)) {
 			try {
 				// only add players with the right permissions.
-				if (plugin.isPermissions()) {
-					if (BukkitTools.matchPlayer(newMember.getName()).isEmpty()) { // Not
-																					// online
-						TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_offline_no_join"), newMember.getName()));
-						invited.remove(newMember);
-					} else if (!TownyUniverse.getPermissionSource().has(BukkitTools.getPlayer(newMember.getName()), PermissionNodes.TOWNY_TOWN_RESIDENT.getNode())) {
-						TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_not_allowed_join"), newMember.getName()));
-						invited.remove(newMember);
-					} else if (TownySettings.getMaxResidentsPerTown() > 0 && town.getResidents().size() >= TownySettings.getMaxResidentsPerTown()){
-						TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_err_max_residents_per_town_reached"), TownySettings.getMaxResidentsPerTown() ));
-						invited.remove(newMember);
-					} else if (TownySettings.getTownInviteCooldown() > 0 && ( (System.currentTimeMillis()/1000 - newMember.getRegistered()/1000) < (TownySettings.getTownInviteCooldown()) )) {
-						TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_err_resident_doesnt_meet_invite_cooldown"), newMember));
-						invited.remove(newMember);
-					} else {
-						town.addResidentCheck(newMember);
-						townInviteResident(name,town, newMember);
-					}
+				if (BukkitTools.matchPlayer(newMember.getName()).isEmpty()) { // Not
+																				// online
+					TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_offline_no_join"), newMember.getName()));
+					invited.remove(newMember);
+				} else if (!TownyUniverse.getPermissionSource().has(BukkitTools.getPlayer(newMember.getName()), PermissionNodes.TOWNY_TOWN_RESIDENT.getNode())) {
+					TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_not_allowed_join"), newMember.getName()));
+					invited.remove(newMember);
+				} else if (TownySettings.getMaxResidentsPerTown() > 0 && town.getResidents().size() >= TownySettings.getMaxResidentsPerTown()){
+					TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_err_max_residents_per_town_reached"), TownySettings.getMaxResidentsPerTown() ));
+					invited.remove(newMember);
+				} else if (TownySettings.getTownInviteCooldown() > 0 && ( (System.currentTimeMillis()/1000 - newMember.getRegistered()/1000) < (TownySettings.getTownInviteCooldown()) )) {
+					TownyMessaging.sendErrorMsg(sender, String.format(TownySettings.getLangString("msg_err_resident_doesnt_meet_invite_cooldown"), newMember));
+					invited.remove(newMember);
 				} else {
 					town.addResidentCheck(newMember);
 					townInviteResident(name,town, newMember);
 				}
+
 			} catch (TownyException e) {
 				invited.remove(newMember);
 				TownyMessaging.sendErrorMsg(sender, e.getMessage());
